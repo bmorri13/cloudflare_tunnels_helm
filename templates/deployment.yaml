@@ -1,0 +1,49 @@
+---
+# templates/deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflared-tunnel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudflared-tunnel
+  template:
+    metadata:
+      labels:
+        app: cloudflared-tunnel
+    spec:
+      containers:
+        - name: cloudflared-tunnel
+          image: {{ .Values.cloudflared.image }}
+          command: ["sh", "-c", "{{ .Values.cloudflared.command }}"]
+          env:
+            - name: TUNNEL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cf-token-bryanmorrison-tech
+                  key: TUNNEL_TOKEN
+          restartPolicy: {{ .Values.cloudflared.restartPolicy }}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alexprinter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alexprinter
+  template:
+    metadata:
+      labels:
+        app: alexprinter
+    spec:
+      containers:
+        - name: alexprinter
+          image: {{ .Values.alexprinter.image }}
+          restartPolicy: {{ .Values.alexprinter.restartPolicy }}

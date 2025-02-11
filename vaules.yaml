@@ -1,0 +1,20 @@
+---
+# values.yaml
+
+cloudflared:
+  image: cloudflare/cloudflared:latest
+  command: "tunnel --no-autoupdate run"
+  env:
+    - name: TUNNEL_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: cf-token-bryanmorrison-tech
+          key: TUNNEL_TOKEN
+  restartPolicy: UnlessStopped
+
+alexprinter:
+  image: bmo75/alex-printer-build-counter:latest
+  restartPolicy: UnlessStopped
+
+network:
+  name: helm-alexprinter-tunnel

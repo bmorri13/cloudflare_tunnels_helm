@@ -1,0 +1,25 @@
+---
+
+# templates/networkpolicy.yaml
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: helm-alexprinter-tunnel-network-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: helm-alexprinter-tunnel
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: cloudflared-tunnel
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: alexprinter
