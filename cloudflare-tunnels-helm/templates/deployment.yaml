@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-alexprinter
+  name: alexprinter
 spec:
   selector:
     matchLabels:
@@ -22,7 +22,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-cloudflared
+  name: cloudflared
 spec:
   selector:
     matchLabels:
@@ -38,7 +38,8 @@ spec:
         imagePullPolicy: {{ .Values.images.cloudflared.pullPolicy }}
         args:
         - "tunnel"
-        - "--no-autoupdate"
+        - "--config"
+        - "/etc/cloudflared/config.yaml"
         - "run"
         env:
         - name: TUNNEL_TOKEN
@@ -46,5 +47,11 @@ spec:
             secretKeyRef:
               name: {{ .Values.tunnel.existingSecret }}
               key: {{ .Values.tunnel.tokenKey }}
-        ports:
-        - containerPort: 3000
+        volumeMounts:
+        - name: config
+          mountPath: /etc/cloudflared/config.yaml
+          subPath: config.yaml
+      volumes:
+      - name: config
+        configMap:
+          name: cloudflared-config
