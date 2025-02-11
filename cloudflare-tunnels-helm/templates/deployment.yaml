@@ -40,7 +40,7 @@ spec:
         - "tunnel"
         - "--no-autoupdate"
         - "run"
-        env:
+                env:
         - name: TUNNEL_TOKEN
           valueFrom:
             secretKeyRef:
