@@ -1,3 +1,6 @@
+---
+# values.yaml
+
 cloudflared:
   image: cloudflare/cloudflared:latest
   command: "tunnel --no-autoupdate run"

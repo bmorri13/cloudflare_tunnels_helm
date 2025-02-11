@@ -1,10 +1,12 @@
 ---
+# templates/deployment.yaml
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cloudflared-tunnel
 spec:
-  replicas: {{ .Values.cloudflared.replicas }}
+  replicas: {{ .Values.cloudflared.replicas | default 1 }}
   selector:
     matchLabels:
       app: cloudflared-tunnel
@@ -33,7 +35,7 @@ kind: Deployment
 metadata:
   name: alexprinter
 spec:
-  replicas: {{ .Values.alexprinter.replicas }}
+  replicas: {{ .Values.alexprinter.replicas | default 1 }}
   selector:
     matchLabels:
       app: alexprinter
