@@ -1,14 +1,17 @@
-# values.yaml
-images:
-  cloudflared:
-    repository: cloudflare/cloudflared
-    tag: latest
-    pullPolicy: Always
-  alexprinter:
-    repository: bmo75/alex-printer-build-counter
-    tag: latest
-    pullPolicy: Always
+cloudflared:
+  image: cloudflare/cloudflared:latest
+  command: "tunnel --no-autoupdate run"
+  env:
+    - name: TUNNEL_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: cf-token-bryanmorrison-tech
+          key: TUNNEL_TOKEN
+  restartPolicy: UnlessStopped
 
-tunnel:
-  existingSecret: cf-token-bryanmorrison-tech
-  tokenKey: TUNNEL_TOKEN
+alexprinter:
+  image: bmo75/alex-printer-build-counter:latest
+  restartPolicy: UnlessStopped
+
+network:
+  name: helm-alexprinter-tunnel

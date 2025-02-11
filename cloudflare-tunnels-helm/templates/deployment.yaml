@@ -1,9 +1,40 @@
+---
 # templates/deployment.yaml
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-alexprinter
+  name: cloudflared-tunnel
 spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudflared-tunnel
+  template:
+    metadata:
+      labels:
+        app: cloudflared-tunnel
+    spec:
+      containers:
+        - name: cloudflared-tunnel
+          image: {{ .Values.cloudflared.image }}
+          command: ["sh", "-c", "{{ .Values.cloudflared.command }}"]
+          env:
+            - name: TUNNEL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cf-token-bryanmorrison-tech
+                  key: TUNNEL_TOKEN
+          restartPolicy: {{ .Values.cloudflared.restartPolicy }}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alexprinter
+spec:
+  replicas: 1
   selector:
     matchLabels:
       app: alexprinter
@@ -13,35 +44,6 @@ spec:
         app: alexprinter
     spec:
       containers:
-      - name: alexprinter
-        image: "{{ .Values.images.alexprinter.repository }}:{{ .Values.images.alexprinter.tag }}"
-        imagePullPolicy: {{ .Values.images.alexprinter.pullPolicy }}
-
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ .Release.Name }}-cloudflared
-spec:
-  selector:
-    matchLabels:
-      app: cloudflared
-  template:
-    metadata:
-      labels:
-        app: cloudflared
-    spec:
-      containers:
-      - name: cloudflared
-        image: "{{ .Values.images.cloudflared.repository }}:{{ .Values.images.cloudflared.tag }}"
-        imagePullPolicy: {{ .Values.images.cloudflared.pullPolicy }}
-        args:
-        - "tunnel"
-        - "--no-autoupdate"
-        - "run"
-        env:
-        - name: TUNNEL_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.tunnel.existingSecret }}
-              key: {{ .Values.tunnel.tokenKey }}
+        - name: alexprinter
+          image: {{ .Values.alexprinter.image }}
+          restartPolicy: {{ .Values.alexprinter.restartPolicy }}
