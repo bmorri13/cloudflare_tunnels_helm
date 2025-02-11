@@ -15,6 +15,8 @@ spec:
       - name: alexprinter
         image: "{{ .Values.images.alexprinter.repository }}:{{ .Values.images.alexprinter.tag }}"
         imagePullPolicy: {{ .Values.images.alexprinter.pullPolicy }}
+        ports:
+        - containerPort: 3000
 
 ---
 apiVersion: apps/v1
@@ -44,3 +46,5 @@ spec:
             secretKeyRef:
               name: {{ .Values.tunnel.existingSecret }}
               key: {{ .Values.tunnel.tokenKey }}
+        ports:
+        - containerPort: 3000
