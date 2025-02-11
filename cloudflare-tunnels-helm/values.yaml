@@ -7,7 +7,7 @@ cloudflared:
     - name: TUNNEL_TOKEN
       valueFrom:
         secretKeyRef:
-          name: cf-token-bryanmorrison-tech
+          name: cf-token
           key: TUNNEL_TOKEN
   replicas: 1
 
