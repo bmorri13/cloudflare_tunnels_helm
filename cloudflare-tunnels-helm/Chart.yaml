@@ -1,3 +1,4 @@
+# Chart.yaml
 apiVersion: v2
 name: cloudflare-tunnels-helm
 description: A Helm chart for Alex Printer application with Cloudflare tunnel

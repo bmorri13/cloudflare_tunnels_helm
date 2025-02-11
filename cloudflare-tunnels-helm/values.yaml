@@ -1,14 +1,15 @@
 # values.yaml
-images:
-  cloudflared:
+cloudflared:
+  image:
     repository: cloudflare/cloudflared
     tag: latest
     pullPolicy: Always
-  alexprinter:
+  tunnel:
+    existingSecret: cf-token-bryanmorrison-tech
+    tokenKey: TUNNEL_TOKEN
+
+alexPrinter:
+  image:
     repository: bmo75/alex-printer-build-counter
     tag: latest
     pullPolicy: Always
-
-tunnel:
-  existingSecret: cf-token-bryanmorrison-tech
-  tokenKey: TUNNEL_TOKEN

@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: alexprinter
-        image: "{{ .Values.images.alexprinter.repository }}:{{ .Values.images.alexprinter.tag }}"
-        imagePullPolicy: {{ .Values.images.alexprinter.pullPolicy }}
+        image: "{{ .Values.alexPrinter.image.repository }}:{{ .Values.alexPrinter.image.tag }}"
+        imagePullPolicy: {{ .Values.alexPrinter.image.pullPolicy }}
 
 ---
 apiVersion: apps/v1
@@ -33,8 +33,8 @@ spec:
     spec:
       containers:
       - name: cloudflared
-        image: "{{ .Values.images.cloudflared.repository }}:{{ .Values.images.cloudflared.tag }}"
-        imagePullPolicy: {{ .Values.images.cloudflared.pullPolicy }}
+        image: "{{ .Values.cloudflared.image.repository }}:{{ .Values.cloudflared.image.tag }}"
+        imagePullPolicy: {{ .Values.cloudflared.image.pullPolicy }}
         args:
         - "tunnel"
         - "--no-autoupdate"
@@ -43,5 +43,5 @@ spec:
         - name: TUNNEL_TOKEN
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.tunnel.existingSecret }}
-              key: {{ .Values.tunnel.tokenKey }}
+              name: {{ .Values.cloudflared.tunnel.existingSecret }}
+              key: {{ .Values.cloudflared.tunnel.tokenKey }}
