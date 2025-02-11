@@ -11,3 +11,4 @@ images:
 tunnel:
   existingSecret: cf-token
   tokenKey: TUNNEL_TOKEN
+  hostname: "alexprinter2.bmosan.com"
