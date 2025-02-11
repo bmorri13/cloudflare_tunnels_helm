@@ -1,21 +1,15 @@
----
-# This section should be moved to values.yaml file separately
-
 # values.yaml
 cloudflared:
-  image: cloudflare/cloudflared:latest
-  command: "tunnel --no-autoupdate run"
-  env:
-    - name: TUNNEL_TOKEN
-      valueFrom:
-        secretKeyRef:
-          name: cf-token-bryanmorrison-tech
-          key: TUNNEL_TOKEN
-  replicas: 1
+  image:
+    repository: cloudflare/cloudflared
+    tag: latest
+    pullPolicy: Always
+  tunnel:
+    existingSecret: cf-token-bryanmorrison-tech
+    tokenKey: TUNNEL_TOKEN
 
-alexprinter:
-  image: bmo75/alex-printer-build-counter:latest
-  replicas: 1
-
-network:
-  name: helm-alexprinter-tunnel
+alexPrinter:
+  image:
+    repository: bmo75/alex-printer-build-counter
+    tag: latest
+    pullPolicy: Always
