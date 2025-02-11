@@ -6,7 +6,7 @@ kind: Deployment
 metadata:
   name: cloudflared-tunnel
 spec:
-  replicas: 1
+  replicas: {{ .Values.cloudflared.replicas | default 1 }}
   selector:
     matchLabels:
       app: cloudflared-tunnel
@@ -17,15 +17,18 @@ spec:
     spec:
       containers:
         - name: cloudflared-tunnel
-          image: {{ .Values.cloudflared.image }}
-          command: ["sh", "-c", "{{ .Values.cloudflared.command }}"]
+          image: {{ .Values.cloudflared.image | default "cloudflare/cloudflared:latest" }}
+          command: ["sh", "-c", "{{ .Values.cloudflared.command | default "tunnel --no-autoupdate run" }}"]
+          {{- if .Values.cloudflared.env }}
           env:
-            - name: TUNNEL_TOKEN
+            {{- range .Values.cloudflared.env }}
+            - name: {{ .name }}
               valueFrom:
                 secretKeyRef:
-                  name: cf-token-bryanmorrison-tech
-                  key: TUNNEL_TOKEN
-          restartPolicy: {{ .Values.cloudflared.restartPolicy }}
+                  name: {{ .valueFrom.secretKeyRef.name }}
+                  key: {{ .valueFrom.secretKeyRef.key }}
+            {{- end }}
+          {{- end }}
 
 ---
 
@@ -34,7 +37,7 @@ kind: Deployment
 metadata:
   name: alexprinter
 spec:
-  replicas: 1
+  replicas: {{ .Values.alexprinter.replicas | default 1 }}
   selector:
     matchLabels:
       app: alexprinter
@@ -45,5 +48,4 @@ spec:
     spec:
       containers:
         - name: alexprinter
-          image: {{ .Values.alexprinter.image }}
-          restartPolicy: {{ .Values.alexprinter.restartPolicy }}
+          image: {{ .Values.alexprinter.image | default "bmo75/alex-printer-build-counter:latest" }}
