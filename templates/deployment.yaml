@@ -17,8 +17,9 @@ spec:
     spec:
       containers:
         - name: cloudflared-tunnel
-          image: {{ .Values.cloudflared.image }}
-          command: ["sh", "-c", "{{ .Values.cloudflared.command }}"]
+          image: {{ .Values.cloudflared.image | default "cloudflare/cloudflared:latest" }}
+          command: ["sh", "-c", "{{ .Values.cloudflared.command | default \"tunnel --no-autoupdate run\" }}"]
+          {{- if .Values.cloudflared.env }}
           env:
             {{- range .Values.cloudflared.env }}
             - name: {{ .name }}
@@ -27,6 +28,7 @@ spec:
                   name: {{ .valueFrom.secretKeyRef.name }}
                   key: {{ .valueFrom.secretKeyRef.key }}
             {{- end }}
+          {{- end }}
 
 ---
 
@@ -46,4 +48,4 @@ spec:
     spec:
       containers:
         - name: alexprinter
-          image: {{ .Values.alexprinter.image }}
+          image: {{ .Values.alexprinter.image | default "bmo75/alex-printer-build-counter:latest" }}
