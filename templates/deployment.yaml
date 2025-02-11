@@ -1,6 +1,4 @@
 ---
-# templates/deployment.yaml
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,7 +23,6 @@ spec:
                 secretKeyRef:
                   name: cf-token-bryanmorrison-tech
                   key: TUNNEL_TOKEN
-          restartPolicy: {{ .Values.cloudflared.restartPolicy }}
 
 ---
 
@@ -46,4 +43,3 @@ spec:
       containers:
         - name: alexprinter
           image: {{ .Values.alexprinter.image }}
-          restartPolicy: {{ .Values.alexprinter.restartPolicy }}
