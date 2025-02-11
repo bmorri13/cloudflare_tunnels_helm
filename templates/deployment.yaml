@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: cloudflared-tunnel
 spec:
-  replicas: 1
+  replicas: {{ .Values.cloudflared.replicas }}
   selector:
     matchLabels:
       app: cloudflared-tunnel
@@ -18,11 +18,13 @@ spec:
           image: {{ .Values.cloudflared.image }}
           command: ["sh", "-c", "{{ .Values.cloudflared.command }}"]
           env:
-            - name: TUNNEL_TOKEN
+            {{- range .Values.cloudflared.env }}
+            - name: {{ .name }}
               valueFrom:
                 secretKeyRef:
-                  name: cf-token-bryanmorrison-tech
-                  key: TUNNEL_TOKEN
+                  name: {{ .valueFrom.secretKeyRef.name }}
+                  key: {{ .valueFrom.secretKeyRef.key }}
+            {{- end }}
 
 ---
 
@@ -31,7 +33,7 @@ kind: Deployment
 metadata:
   name: alexprinter
 spec:
-  replicas: 1
+  replicas: {{ .Values.alexprinter.replicas }}
   selector:
     matchLabels:
       app: alexprinter

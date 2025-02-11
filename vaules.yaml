@@ -7,11 +7,11 @@ cloudflared:
         secretKeyRef:
           name: cf-token-bryanmorrison-tech
           key: TUNNEL_TOKEN
-  restartPolicy: Always
+  replicas: 1
 
 alexprinter:
   image: bmo75/alex-printer-build-counter:latest
-  restartPolicy: Always
+  replicas: 1
 
 network:
   name: helm-alexprinter-tunnel
