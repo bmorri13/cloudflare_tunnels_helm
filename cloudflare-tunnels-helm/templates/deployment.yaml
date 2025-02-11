@@ -1,43 +1,8 @@
----
-# templates/deployment.yaml
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cloudflared-tunnel
+  name: {{ .Release.Name }}-alexprinter
 spec:
-  replicas: {{ .Values.cloudflared.replicas | default 1 }}
-  selector:
-    matchLabels:
-      app: cloudflared-tunnel
-  template:
-    metadata:
-      labels:
-        app: cloudflared-tunnel
-    spec:
-      containers:
-        - name: cloudflared-tunnel
-          image: {{ .Values.cloudflared.image | default "cloudflare/cloudflared:latest" }}
-          command: ["sh", "-c", "{{ .Values.cloudflared.command | default "tunnel --no-autoupdate run" }}"]
-          {{- if .Values.cloudflared.env }}
-          env:
-            {{- range .Values.cloudflared.env }}
-            - name: {{ .name }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .valueFrom.secretKeyRef.name }}
-                  key: {{ .valueFrom.secretKeyRef.key }}
-            {{- end }}
-          {{- end }}
-
----
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: alexprinter
-spec:
-  replicas: {{ .Values.alexprinter.replicas | default 1 }}
   selector:
     matchLabels:
       app: alexprinter
@@ -47,5 +12,35 @@ spec:
         app: alexprinter
     spec:
       containers:
-        - name: alexprinter
-          image: {{ .Values.alexprinter.image | default "bmo75/alex-printer-build-counter:latest" }}
+      - name: alexprinter
+        image: "{{ .Values.images.alexprinter.repository }}:{{ .Values.images.alexprinter.tag }}"
+        imagePullPolicy: {{ .Values.images.alexprinter.pullPolicy }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-cloudflared
+spec:
+  selector:
+    matchLabels:
+      app: cloudflared
+  template:
+    metadata:
+      labels:
+        app: cloudflared
+    spec:
+      containers:
+      - name: cloudflared
+        image: "{{ .Values.images.cloudflared.repository }}:{{ .Values.images.cloudflared.tag }}"
+        imagePullPolicy: {{ .Values.images.cloudflared.pullPolicy }}
+        args:
+        - "tunnel"
+        - "--no-autoupdate"
+        - "run"
+        env:
+        - name: TUNNEL_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.tunnel.existingSecret }}
+              key: {{ .Values.tunnel.tokenKey }}

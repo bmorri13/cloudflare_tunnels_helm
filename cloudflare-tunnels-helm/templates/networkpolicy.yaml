@@ -1,23 +1,12 @@
----
-# templates/networkpolicy.yaml
+# templates/network-policy.yaml
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: helm-alexprinter-tunnel-network-policy
+  name: {{ .Release.Name }}-allow-same-namespace
 spec:
-  podSelector:
-    matchLabels:
-      app: helm-alexprinter-tunnel
-  policyTypes:
-  - Ingress
-  - Egress
+  podSelector: {}
   ingress:
   - from:
-    - podSelector:
-        matchLabels:
-          app: cloudflared-tunnel
-  egress:
-  - to:
-    - podSelector:
-        matchLabels:
-          app: alexprinter
+    - podSelector: {}
+  policyTypes:
+  - Ingress
