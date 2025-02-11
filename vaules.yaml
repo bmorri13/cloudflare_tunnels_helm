@@ -1,6 +1,7 @@
 ---
-# values.yaml
+# This section should be moved to values.yaml file separately
 
+# values.yaml
 cloudflared:
   image: cloudflare/cloudflared:latest
   command: "tunnel --no-autoupdate run"
