@@ -3,7 +3,6 @@ kind: Service
 metadata:
   name: printer-service
 spec:
-  type: LoadBalancer
   selector:
     app: alexprinter
   ports:
